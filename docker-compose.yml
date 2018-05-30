@@ -2,17 +2,15 @@ version: '3.3'
 services:
   redis:
     image: "redis"
-    restart: always
     ports: ['6379:6379']
-#    environment:
-#      POSTGRES_PASSWORD: qweqwe123
-#      POSTGRES_USER: postgres
-#      POSTGRES_DB: springbootdb
   redis-demo:
     build: .
     image: redis-demo:1.0
-    ports: ['8080:8080']
+    ports: ['8080:8080', '8000:8000']
     volumes:
       - /Users/volodymyr.bakhmatiuk/projects/redis-demo/target:/redis-demo-volume
     links:
       - redis
+    environment:
+       # todo remove this string if you do not want to debug
+        - "JAVA_OPTS=-Djava.security.egd=file:/dev/./urandom -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"

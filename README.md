@@ -12,3 +12,9 @@ To run everything:
 5. Test with 'curl -X GET localhost:8080/api/test'
 6. Change code and rebuild project
 7. Test with 'curl -X GET localhost:8080/api/test', docker container have to respond with new logic
+
+Resources:
+1. Redis datatypes https://redis.io/topics/data-types-intro
+2. Spring Data Redis repositories tutorial http://www.baeldung.com/spring-data-redis-tutorial
+
+To debug create remote configuration on 8000 port
