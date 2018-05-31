@@ -11,4 +11,5 @@ public interface MessageService {
 
     Message create(String id, String text, String authorId);
     Set<Message> getMessages(String userId);
+    Set<Message> getMessagesPipelined(String userId);
 }

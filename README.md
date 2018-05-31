@@ -18,3 +18,7 @@ Resources:
 2. Spring Data Redis repositories tutorial http://www.baeldung.com/spring-data-redis-tutorial
 
 To debug create remote configuration on 8000 port
+
+To connect redis do:
+ 1. 'docker container ls' do get id of redis container
+ 2. 'docker exec -i -t <redis_container_id> redis-cli'

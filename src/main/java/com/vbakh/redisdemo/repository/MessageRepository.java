@@ -8,4 +8,4 @@ import org.springframework.stereotype.Repository;
  * Created by volodymyr.bakhmatiuk on 5/30/18.
  */
 @Repository
-public interface MessageRepository extends CrudRepository<Message, String> {}
+public interface MessageRepository extends MessageRepositoryCustom, CrudRepository<Message, String> {}

@@ -8,9 +8,8 @@ import com.vbakh.redisdemo.service.MessageService;
 import com.vbakh.redisdemo.service.UserService;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
+import static com.vbakh.redisdemo.utils.InitializationUtils.getNames;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -39,25 +38,7 @@ public class MainServiceImpl implements MainService {
     @Override
     public UserResponse getUserResponse(String userId) {
         User user = userService.get(userId);
-        Set<Message> messages = messageService.getMessages(userId);
+        Set<Message> messages = messageService.getMessagesPipelined(userId);
         return new UserResponse(user, messages);
-    }
-
-    private List<String> getNames() {
-        List<String> names = new ArrayList<>(1230);
-        URL url = null;
-        try {
-            url = new URL("http://deron.meranda.us/data/census-dist-male-first.txt");
-            Scanner s = new Scanner(url.openStream());
-            while (s.hasNext()) {
-                names.add(s.next());
-                s.next();
-                s.next();
-                s.next();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read names", e);
-        }
-        return names;
     }
 }

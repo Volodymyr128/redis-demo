@@ -5,7 +5,6 @@ import com.vbakh.redisdemo.repository.MessageRepository;
 import com.vbakh.redisdemo.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.collections.DefaultRedisSet;
 import org.springframework.data.redis.support.collections.RedisSet;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Resource
     private MessageRepository repository;
-    @Resource
-    private RedisTemplate<String, String> template;
 
     @Override
     public Message create(String id, String text, String authorId) {
@@ -37,20 +34,23 @@ public class MessageServiceImpl implements MessageService {
                 .authorId(authorId)
                 .build();
         message = repository.save(message);
-        String key = "user:" + authorId + ":messages";
-        RedisSet<String> user2Message = new DefaultRedisSet<>(key, template);
-        user2Message.add(message.getId());
+        repository.addUserMessage(authorId, id);
         return message;
     }
 
     @Override
     public Set<Message> getMessages(String userId) {
-        String key = "user:" + userId + ":messages";
-        return new DefaultRedisSet<>(key, template).stream()
+        return repository.getMessageIdsByUserId(userId).stream()
                 .map(id -> repository.findById(id).orElseGet(() -> {
                     logger.warn("There is no message for key: " + id);
                     return null;
                 }))
                 .collect(toSet());
+    }
+
+    @Override
+    public Set<Message> getMessagesPipelined(String userId) {
+        Set<String> messageIds = repository.getMessageIdsByUserId(userId);
+        return repository.getMessages(messageIds);
     }
 }
