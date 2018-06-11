@@ -1,8 +1,10 @@
 package com.vbakh.redisdemo.service.impl;
 
+import com.google.common.collect.Sets;
 import com.vbakh.redisdemo.domain.Message;
 import com.vbakh.redisdemo.repository.MessageRepository;
 import com.vbakh.redisdemo.service.MessageService;
+import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.support.collections.DefaultRedisSet;
@@ -10,6 +12,7 @@ import org.springframework.data.redis.support.collections.RedisSet;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
@@ -50,7 +53,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Set<Message> getMessagesPipelined(String userId) {
-        Set<String> messageIds = repository.getMessageIdsByUserId(userId);
-        return repository.getMessages(messageIds);
+        Iterable<String> messageIds = repository.getMessageIdsByUserId(userId);
+        return Sets.newHashSet(repository.findAllById(messageIds));
+//        return repository.getMessages(messageIds); // use pipelining
     }
 }
